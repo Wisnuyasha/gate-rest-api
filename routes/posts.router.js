@@ -3,7 +3,7 @@ const router = express.Router()
 
 const postsController = require("../controller/posts.controller")
 
-router.post("/keluar", postsController.keluar)
-router.post("/masuk", postsController.masuk)
+router.get("/keluar", postsController.keluar)
+router.get("/masuk", postsController.masuk)
 
 module.exports = router

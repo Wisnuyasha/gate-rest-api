@@ -8,9 +8,9 @@ app.use(express.json())
 
 const postsRouter = require('./routes/posts.router')
 
-app.use("/api/v1/posts", postsRouter)
+app.use("/", postsRouter)
 
-const PORT = process.env.PORT || 1433
+const PORT = process.env.PORT || 4000
 
 app.listen(PORT, () => {
     console.log("Server is running....")
