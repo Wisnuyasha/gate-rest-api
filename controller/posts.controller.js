@@ -20,11 +20,28 @@ const postsController = {
             //     });
             //     res.send({ message: 'Berhasil keluar gerbang' });
             // }
-            console.log("keluar")
+            pool.connect(err => {
+                    if (err) {
+                        console.error('Koneksi ke SQL Server gagal:', err)
+                    } else {
+                        console.log('Koneksi ke SQL Server berhasil')
+                
+                        const request = pool.request()
+                        request.query('SELECT * FROM kartu_akses', (err, result) => {
+                            if (err) {
+                                console.error('Kueri gagal:', err)
+                            } else {
+                                console.log('Hasil kueri:', result.recordset)
+                            }
+                            pool.close()
+                        })
+                    }
+                }) // test konek ke mssql
+            console.log("keluar bang")
+            res.send({ message: 'keluar bang' });
         } catch (error) {
-            console.error("error masuk");
-            // console.error(error);
-            // res.status(500).send({ message: 'Terjadi kesalahan saat memproses permintaan' });
+            console.error(error);
+            res.status(500).send({ message: 'Terjadi kesalahan saat memproses permintaan' });
         }
     },
     masuk: async (req, res) => {
@@ -47,11 +64,11 @@ const postsController = {
             // } else {
             //     res.send({ message: 'Kartu sedang aktif' });
             // }
-            console.log("masuk")
+            console.log("masuk bang")
+            res.send({ message: 'masuk bang' });
         } catch (error) {
-            console.error("error masuk");
-            // console.error(error);
-            // res.status(500).send({ message: 'Terjadi kesalahan saat memproses permintaan' });
+            console.error(error);
+            res.status(500).send({ message: 'Terjadi kesalahan saat memproses permintaan' });
         }
     },
 
