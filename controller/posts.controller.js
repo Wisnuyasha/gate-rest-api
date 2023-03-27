@@ -2,41 +2,31 @@ const pool = require("../database/index")
 const postsController = {
     keluar: async (req, res) => {
         try {
-            // const id_kartu_akses = req.body.idkartu;
-            // const result = await new Promise((resolve, reject) => {
-            //     pool.query('SELECT is_aktif FROM kartu_akses WHERE id_kartu_akses = ?', [id_kartu_akses], (error, results) => {
-            //         if (error) return reject(error);
-            //         resolve(results);
-            //     });
-            // });
-            // if (result[0].is_aktif === 0) {
-            //     res.send({ message: 'Kartu sedang tidak aktif' });
-            // } else {
-            //     await new Promise((resolve, reject) => {
-            //         pool.query('UPDATE kartu_akses SET is_aktif = 0 WHERE id_kartu_akses = ?', [id_kartu_akses], (error, results) => {
-            //             if (error) return reject(error);
-            //             resolve(results);
-            //         });
-            //     });
-            //     res.send({ message: 'Berhasil keluar gerbang' });
-            // }
+            const id_kartu_akses = req.body.id_kartu_akses;
+            const query = `SELECT is_aktif FROM kartu_akses WHERE id_kartu_akses = @id_kartu_akses`;
             pool.connect(err => {
                     if (err) {
                         console.error('Koneksi ke SQL Server gagal:', err)
                     } else {
                         console.log('Koneksi ke SQL Server berhasil')
-                
                         const request = pool.request()
-                        request.query('SELECT * FROM kartu_akses', (err, result) => {
-                            if (err) {
-                                console.error('Kueri gagal:', err)
+                        request.input('id_kartu_akses', require('mssql').VarChar, id_kartu_akses);
+                        request.query(query, (err, result) => {
+                            if (err) throw err;
+                            if (result.recordset.length === 0) {
+                              // If id kartu akses is invalid
+                              res.status(400).send('Invalid id kartu akses');
+                            } else if (result.recordset[0].is_aktif === true) {
+                              // If id kartu akses is valid and active
+                              res.status(200).send('Id kartu akses valid');
                             } else {
-                                console.log('Hasil kueri:', result.recordset)
+                              // If id kartu akses is valid but inactive
+                              res.status(400).send('Id kartu akses tidak aktif');
                             }
                             pool.close()
                         })
                     }
-                }) // test konek ke mssql
+                })
             console.log("keluar bang")
             res.send({ message: 'keluar bang' });
         } catch (error) {
@@ -46,24 +36,6 @@ const postsController = {
     },
     masuk: async (req, res) => {
         try {
-            // const id_kartu_akses = req.body.idkartu;
-            // const result = await new Promise((resolve, reject) => {
-            //     pool.query('SELECT is_aktif FROM kartu_akses WHERE id_kartu_akses = ?', [id_kartu_akses], (error, results) => {
-            //         if (error) return reject(error);
-            //         resolve(results);
-            //     });
-            // });
-            // if (result[0].is_aktif === 0) {
-            //     await new Promise((resolve, reject) => {
-            //         pool.query('UPDATE kartu_akses SET is_aktif = 1 WHERE id_kartu_akses = ?', [id_kartu_akses], (error, results) => {
-            //             if (error) return reject(error);
-            //             resolve(results);
-            //         });
-            //     });
-            //     res.send({ message: 'Berhasil memasuki gerbang' });
-            // } else {
-            //     res.send({ message: 'Kartu sedang aktif' });
-            // }
             console.log("masuk bang")
             res.send({ message: 'masuk bang' });
         } catch (error) {
