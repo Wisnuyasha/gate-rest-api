@@ -5,5 +5,5 @@ npm i
 ```
 terus
 ```bash
-node index.js
+npm run start
 ```
